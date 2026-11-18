@@ -2,8 +2,7 @@ import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
 import { SCENES } from "./config";
 import { ScenePlaceholder } from "./ScenePlaceholder";
-import { StickMan } from "./StickMan";
-import { POSES } from "./poses";
+import { Scene1Hook } from "./scenes/Scene1Hook";
 
 export const BugTerakhir: React.FC = () => {
   return (
@@ -18,13 +17,7 @@ export const BugTerakhir: React.FC = () => {
           name={SCENES.S1_HOOK.name}
           totalDuration={SCENES.S1_HOOK.duration}
         >
-          {/* Centered static stick man in standing pose */}
-          <StickMan
-            pose={POSES.standing}
-            x={960}
-            y={540}
-            scale={1.5}
-          />
+          <Scene1Hook />
         </ScenePlaceholder>
       </Sequence>
 
