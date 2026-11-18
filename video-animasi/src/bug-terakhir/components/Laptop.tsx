@@ -1,52 +1,46 @@
 import React from "react";
 import { COLORS, SCENE1_LAYOUT } from "../config";
 
-interface LaptopProps {
+export interface LaptopProps {
   children?: React.ReactNode;
 }
 
-export const Laptop: React.FC<LaptopProps> = ({ children }) => {
-  const { laptopBase, laptopScreen } = SCENE1_LAYOUT;
+export const Laptop: React.FC<LaptopProps> = () => {
+  const { laptop } = SCENE1_LAYOUT;
 
   return (
-    <div
+    <svg
       style={{
         position: "absolute",
         left: 0,
         top: 0,
         width: "100%",
         height: "100%",
+        overflow: "visible",
         pointerEvents: "none",
       }}
     >
-      {/* Laptop Base */}
-      <div
-        style={{
-          position: "absolute",
-          left: laptopBase.x,
-          top: laptopBase.topY,
-          width: laptopBase.width,
-          height: laptopBase.height,
-          backgroundColor: COLORS.screen,
-          borderRadius: 2,
-        }}
+      {/* Laptop Base (Side View, resting on desk) */}
+      <rect
+        x={laptop.baseX}
+        y={laptop.baseTopY}
+        width={laptop.baseWidth}
+        height={laptop.baseHeight}
+        rx={laptop.baseCornerRadius}
+        ry={laptop.baseCornerRadius}
+        fill={COLORS.screen}
       />
 
-      {/* Laptop Screen Frame (flat facing camera) */}
-      <div
-        style={{
-          position: "absolute",
-          left: laptopScreen.x,
-          top: laptopScreen.y,
-          width: laptopScreen.width,
-          height: laptopScreen.height,
-          backgroundColor: COLORS.screen,
-          borderRadius: laptopScreen.cornerRadius,
-          overflow: "hidden",
-        }}
-      >
-        {children}
-      </div>
-    </div>
+      {/* Laptop Screen (Side View, tilted 18° away from stick man) */}
+      <line
+        x1={laptop.hingeX}
+        y1={laptop.hingeY}
+        x2={laptop.screenTopX}
+        y2={laptop.screenTopY}
+        stroke={COLORS.screen}
+        strokeWidth={laptop.screenWidth}
+        strokeLinecap="round"
+      />
+    </svg>
   );
 };

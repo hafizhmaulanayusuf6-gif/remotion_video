@@ -3,20 +3,24 @@ import { Easing, interpolate, useCurrentFrame } from "remotion";
 import { SCENE1_LAYOUT } from "../config";
 import { blendPose, poses } from "../poses";
 import { StickMan, StickManPose } from "../StickMan";
-import { Room } from "../components/Room";
-import { Laptop } from "../components/Laptop";
+import { DeskSetting } from "../components/DeskSetting";
 import { CodeScreen } from "../components/CodeScreen";
-import { Clock } from "../components/Clock";
-import { CoffeeCup } from "../components/CoffeeCup";
 
 export const Scene1Hook: React.FC = () => {
   const frame = useCurrentFrame();
 
-  // 1. Slow camera push-in: scale 1.00 -> 1.05 centered at laptop screen center
-  const cameraScale = interpolate(frame, [0, 119], [1.0, 1.05], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const { camera, stickMan } = SCENE1_LAYOUT;
+
+  // 1. Slow camera push-in: scale 1.00 -> 1.05 centered at canvas center (960, 540)
+  const cameraScale = interpolate(
+    frame,
+    [0, 119],
+    [camera.scaleStart, camera.scaleEnd],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    }
+  );
 
   // 2. Typing motion (frames 0-36):
   // forearm elbow oscillates +-4 degrees every 3 frames in opposite phase
@@ -71,42 +75,20 @@ export const Scene1Hook: React.FC = () => {
     easing: Easing.out(Easing.cubic),
   });
 
-  const { laptopScreen, stickMan } = SCENE1_LAYOUT;
-
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        width: 1920,
-        height: 1080,
-        transformOrigin: `${laptopScreen.centerX}px ${laptopScreen.centerY}px`,
-        transform: `scale(${cameraScale})`,
-      }}
-    >
-      {/* Wall Clock */}
-      <Clock text="02:00" />
-
-      {/* Room: Floor, Chair, Desk */}
-      <Room />
-
-      {/* Stick Man sitting at desk */}
-      <StickMan
-        pose={currentPose}
-        x={stickMan.pelvisX}
-        y={stickMan.pelvisY}
-        scale={stickMan.scale}
-        facing={stickMan.facing}
-      />
-
-      {/* Laptop with CodeScreen */}
-      <Laptop>
-        <CodeScreen errorProgress={errorProgress} />
-      </Laptop>
-
-      {/* Coffee Cup on Desk */}
-      <CoffeeCup />
-    </div>
+    <DeskSetting
+      cameraScale={cameraScale}
+      clockText="02:00"
+      stickMan={
+        <StickMan
+          pose={currentPose}
+          x={stickMan.pelvisX}
+          y={stickMan.pelvisY}
+          scale={stickMan.scale}
+          facing={stickMan.facing}
+        />
+      }
+      panelContent={<CodeScreen errorProgress={errorProgress} />}
+    />
   );
 };

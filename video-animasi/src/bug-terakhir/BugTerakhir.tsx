@@ -3,6 +3,8 @@ import { AbsoluteFill, Sequence } from "remotion";
 import { SCENES } from "./config";
 import { ScenePlaceholder } from "./ScenePlaceholder";
 import { Scene1Hook } from "./scenes/Scene1Hook";
+import { Scene2Search } from "./scenes/Scene2Search";
+import { Scene3Chase } from "./scenes/Scene3Chase";
 
 export const BugTerakhir: React.FC = () => {
   return (
@@ -30,7 +32,9 @@ export const BugTerakhir: React.FC = () => {
         <ScenePlaceholder
           name={SCENES.S2_SEARCH.name}
           totalDuration={SCENES.S2_SEARCH.duration}
-        />
+        >
+          <Scene2Search />
+        </ScenePlaceholder>
       </Sequence>
 
       {/* S3 Chase: frames 360 - 570 */}
@@ -42,7 +46,9 @@ export const BugTerakhir: React.FC = () => {
         <ScenePlaceholder
           name={SCENES.S3_CHASE.name}
           totalDuration={SCENES.S3_CHASE.duration}
-        />
+        >
+          <Scene3Chase />
+        </ScenePlaceholder>
       </Sequence>
 
       {/* S4 Twist: frames 570 - 750 */}

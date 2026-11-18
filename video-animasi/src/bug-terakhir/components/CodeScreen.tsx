@@ -5,12 +5,21 @@ import { COLORS, FONTS } from "../config";
 const CODE_WIDTHS = [260, 340, 180, 300, 220, 360, 200, 280, 150];
 const CODE_INDENTS = [0, 40, 40, 80, 80, 40, 40, 0, 0];
 const ERROR_LINE_INDEX = 5;
+const LINE_SPACING = 30;
+const TOP_PADDING = 40;
+const VISIBLE_LINE_COUNT = 14;
 
-interface CodeScreenProps {
+export interface CodeScreenProps {
   errorProgress: number; // 0..1
+  scrollOffset?: number;
+  children?: React.ReactNode;
 }
 
-export const CodeScreen: React.FC<CodeScreenProps> = ({ errorProgress }) => {
+export const CodeScreen: React.FC<CodeScreenProps> = ({
+  errorProgress,
+  scrollOffset,
+  children,
+}) => {
   const clampedProgress = Math.min(1, Math.max(0, errorProgress));
 
   const errorLineColor = interpolateColors(
@@ -19,6 +28,13 @@ export const CodeScreen: React.FC<CodeScreenProps> = ({ errorProgress }) => {
     [COLORS.codeLine, COLORS.error]
   );
 
+  const isScrolling = scrollOffset !== undefined;
+
+  // In scrolling mode, compute constant count of visible lines
+  const minLineIndex = isScrolling
+    ? Math.max(0, Math.floor((scrollOffset - TOP_PADDING) / LINE_SPACING))
+    : 0;
+
   return (
     <div
       style={{
@@ -26,29 +42,58 @@ export const CodeScreen: React.FC<CodeScreenProps> = ({ errorProgress }) => {
         width: "100%",
         height: "100%",
         boxSizing: "border-box",
-        paddingTop: 40,
-        paddingLeft: 36,
+        paddingTop: isScrolling ? 0 : TOP_PADDING,
+        paddingLeft: isScrolling ? 0 : 36,
+        overflow: "hidden",
       }}
     >
-      {/* 9 Code Line Bars */}
-      {CODE_WIDTHS.map((width, index) => {
-        const isErrorLine = index === ERROR_LINE_INDEX;
-        const color = isErrorLine ? errorLineColor : COLORS.codeLine;
+      {/* Code lines */}
+      {isScrolling
+        ? Array.from({ length: VISIBLE_LINE_COUNT }).map((_, k) => {
+            const lineIndex = minLineIndex + k;
+            const patternIndex = lineIndex % CODE_WIDTHS.length;
+            const width = CODE_WIDTHS[patternIndex];
+            const indent = CODE_INDENTS[patternIndex];
+            const y = TOP_PADDING + lineIndex * LINE_SPACING - scrollOffset;
+            const isErrorLine = lineIndex === ERROR_LINE_INDEX;
+            const color = isErrorLine ? COLORS.error : COLORS.codeLine;
 
-        return (
-          <div
-            key={index}
-            style={{
-              height: 10,
-              width,
-              borderRadius: 5,
-              backgroundColor: color,
-              marginLeft: CODE_INDENTS[index],
-              marginBottom: 20, // line spacing 30: 10px bar + 20px margin
-            }}
-          />
-        );
-      })}
+            return (
+              <div
+                key={lineIndex}
+                style={{
+                  position: "absolute",
+                  top: y,
+                  left: 36 + indent,
+                  height: 10,
+                  width,
+                  borderRadius: 5,
+                  backgroundColor: color,
+                }}
+              />
+            );
+          })
+        : CODE_WIDTHS.map((width, index) => {
+            const isErrorLine = index === ERROR_LINE_INDEX;
+            const color = isErrorLine ? errorLineColor : COLORS.codeLine;
+
+            return (
+              <div
+                key={index}
+                style={{
+                  height: 10,
+                  width,
+                  borderRadius: 5,
+                  backgroundColor: color,
+                  marginLeft: CODE_INDENTS[index],
+                  marginBottom: 20, // line spacing 30: 10px bar + 20px margin
+                }}
+              />
+            );
+          })}
+
+      {/* Optional Bug overlay (in front of code lines, behind badge) */}
+      {children}
 
       {/* Red "1 error" Badge at bottom-left */}
       {clampedProgress > 0 && (
@@ -72,6 +117,7 @@ export const CodeScreen: React.FC<CodeScreenProps> = ({ errorProgress }) => {
             transformOrigin: "left center",
             transform: `scale(${0.85 + 0.15 * clampedProgress})`,
             letterSpacing: "0.5px",
+            zIndex: 2,
           }}
         >
           1 error

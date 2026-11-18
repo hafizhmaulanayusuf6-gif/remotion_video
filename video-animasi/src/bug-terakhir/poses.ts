@@ -30,6 +30,15 @@ export const poses = {
     leftLeg: { hip: 90, knee: -90 },
     rightLeg: { hip: 90, knee: -90 },
   },
+  // Profile, facing right. Left arm typing, right arm pointing straight toward laptop screen.
+  sitPoint: {
+    torsoLean: 4,
+    headAngle: 0,
+    leftArm: { shoulder: 25, elbow: 55 },
+    rightArm: { shoulder: 100, elbow: 0 },
+    leftLeg: { hip: 90, knee: -90 },
+    rightLeg: { hip: 90, knee: -90 },
+  },
   // Front view. Elbows out, hands on the sides of the head.
   handsOnHead: {
     torsoLean: 0,
@@ -56,6 +65,42 @@ export const poses = {
     rightArm: { shoulder: -65, elbow: 70 },
     leftLeg: { hip: -35, knee: -55 },
     rightLeg: { hip: 50, knee: -40 },
+  },
+  // Profile, facing right. Left/right swap of chase for run cycle.
+  runB: {
+    torsoLean: 15,
+    headAngle: 0,
+    leftArm: { shoulder: -65, elbow: 70 },
+    rightArm: { shoulder: 60, elbow: 45 },
+    leftLeg: { hip: 50, knee: -40 },
+    rightLeg: { hip: -35, knee: -55 },
+  },
+  // Profile, facing right, relaxed standing, slightly leaning.
+  standSide: {
+    torsoLean: 6,
+    headAngle: 0,
+    leftArm: { shoulder: 8, elbow: 10 },
+    rightArm: { shoulder: 14, elbow: 12 },
+    leftLeg: { hip: -4, knee: 0 },
+    rightLeg: { hip: 4, knee: 0 },
+  },
+  // Profile, facing right, braking hard. Legs wide in an A-shape.
+  skid: {
+    torsoLean: -10,
+    headAngle: 0,
+    leftArm: { shoulder: -60, elbow: 20 },
+    rightArm: { shoulder: 70, elbow: -20 },
+    leftLeg: { hip: -35, knee: 0 },
+    rightLeg: { hip: 35, knee: 0 },
+  },
+  // Profile, facing right, leaning in to look at something below.
+  peer: {
+    torsoLean: 16,
+    headAngle: 0,
+    leftArm: { shoulder: 18, elbow: 15 },
+    rightArm: { shoulder: 22, elbow: 15 },
+    leftLeg: { hip: -4, knee: 0 },
+    rightLeg: { hip: 4, knee: 0 },
   },
   // Front view. Rigid, slightly leaning back.
   frozen: {
@@ -119,4 +164,35 @@ export const blendPose = (
       knee: lerp(a.rightLeg.knee, b.rightLeg.knee, k),
     },
   };
+};
+
+const toRad = (deg: number): number => (deg * Math.PI) / 180;
+
+/**
+ * Returns the relative vertical offset (px, unscaled) from pelvis to a foot.
+ * Based on FIGURE_PROPORTIONS: thighLength = 75, shinLength = 75.
+ */
+export const getFootRelY = (hip: number, knee: number): number => {
+  const thighLen = 75;
+  const shinLen = 75;
+  const kneeY = thighLen * Math.cos(toRad(hip));
+  const footY = kneeY + shinLen * Math.cos(toRad(hip + knee));
+  return footY;
+};
+
+/**
+ * Returns the pelvis Y so that the lowest foot point touches groundY
+ * (accounting for the limb stroke half-width = 5 * scale).
+ * For sitTyping at scale 1.6 and groundY 900, reproduces 772 exactly.
+ */
+export const groundedPelvisY = (
+  pose: StickManPose,
+  scale: number,
+  groundY: number
+): number => {
+  const strokeHalfWidth = 5; // STICK_MAN_STROKE width 10 / 2
+  const leftFootY = getFootRelY(pose.leftLeg.hip, pose.leftLeg.knee);
+  const rightFootY = getFootRelY(pose.rightLeg.hip, pose.rightLeg.knee);
+  const maxFootY = Math.max(leftFootY, rightFootY);
+  return groundY - (maxFootY + strokeHalfWidth) * scale;
 };

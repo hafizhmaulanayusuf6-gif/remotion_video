@@ -84,6 +84,12 @@ export const COMPOSITION_CONFIG = {
  * Scene 1 "Hook" layout constants (all dimensions in px on 1920x1080 canvas).
  */
 export const SCENE1_LAYOUT = {
+  camera: {
+    originX: 960,
+    originY: 540,
+    scaleStart: 1.0,
+    scaleEnd: 1.05,
+  },
   floor: {
     y: 900,
     thickness: 6,
@@ -113,28 +119,54 @@ export const SCENE1_LAYOUT = {
     legStartX: 1740,
     legEndX: 1764,
   },
-  laptopBase: {
-    x: 750,
-    width: 640,
-    height: 12,
-    topY: 726,
+  laptop: {
+    baseX: 710,
+    baseWidth: 200,
+    baseHeight: 14,
+    baseCornerRadius: 4,
+    baseTopY: 724, // desk.topY (738) - baseHeight (14)
+    hingeX: 910, // baseX + baseWidth
+    hingeY: 724, // baseTopY
+    screenLength: 150,
+    screenAngleDeg: 18,
+    screenWidth: 12,
+    screenTopX: 956.35, // hingeX + 150 * sin(18°)
+    screenTopY: 581.34, // hingeY - 150 * cos(18°)
   },
+  screenInset: {
+    x: 1200,
+    y: 235,
+    width: 560,
+    height: 340,
+    cornerRadius: 12,
+  },
+  connectorLines: {
+    strokeWidth: 3,
+  },
+  /** Backwards compatibility alias for laptopBase */
+  laptopBase: {
+    x: 710,
+    width: 200,
+    height: 14,
+    topY: 724,
+  },
+  /** Backwards compatibility alias for screenInset */
   laptopScreen: {
     width: 560,
     height: 340,
     cornerRadius: 12,
-    x: 790,
-    y: 386,
-    centerX: 1070,
-    centerY: 556,
+    x: 1200,
+    y: 235,
+    centerX: 1480,
+    centerY: 405,
   },
   clock: {
     width: 300,
     height: 130,
     cornerRadius: 14,
-    centerX: 1580,
+    centerX: 380,
     centerY: 215,
-    x: 1430,
+    x: 230,
     y: 150,
     fontSize: 96,
   },
@@ -144,5 +176,98 @@ export const SCENE1_LAYOUT = {
     width: 70,
     height: 80,
     strokeWidth: 10,
+  },
+} as const;
+
+/**
+ * Scene 2 "Pencarian" layout and event constants.
+ */
+export const SCENE2_LAYOUT = {
+  coffeeCups: [
+    { id: "cup1", x: 1560, frame: 0 },
+    { id: "cup2", x: 1470, frame: 78 },
+    { id: "cup3", x: 1380, frame: 150 },
+  ],
+  cupAnimation: {
+    dropDistance: 40,
+    dropDuration: 6,
+    opacityDuration: 4,
+  },
+  clockEvents: [
+    { text: "02:00", untilFrame: 78 },
+    { text: "03:00", untilFrame: 150 },
+    { text: "04:00", untilFrame: 240 },
+  ],
+  scroll: {
+    speed: 6, // px per frame at full speed
+    lineSpacing: 30, // px per line
+    rampFrames: 12,
+  },
+  bugEvents: [
+    { id: "A", startFrame: 36, x: 450, y: 140 },
+    { id: "B", startFrame: 108, x: 180, y: 230 },
+    { id: "C", startFrame: 180, x: 360, y: 300 },
+  ],
+  bugAnimation: {
+    popInDuration: 8,
+    duckOutStart: 22,
+    duckOutEnd: 28,
+  },
+  pointAnimation: {
+    blendInStart: 14,
+    blendInEnd: 19,
+    blendOutStart: 27,
+    blendOutEnd: 33,
+  },
+  camera: {
+    holdEndFrame: 150,
+    easeEndFrame: 239,
+    startScale: 1.05,
+    endScale: 1.0,
+  },
+} as const;
+
+/**
+ * Scene 3 "Pengejaran" layout and event constants.
+ */
+export const SCENE3_LAYOUT = {
+  camera: {
+    originX: 960,
+    originY: 540,
+    scale: 1.0,
+  },
+  clockEvents: [
+    { text: "04:00", untilFrame: 150 },
+    { text: "05:00", untilFrame: 210 },
+  ],
+  coffeeCups: [
+    { x: 1560 },
+    { x: 1470 },
+    { x: 1380 },
+  ],
+  scroll: {
+    initialOffset: 1398,
+    speed: 6,
+    stopOffset: 2034,
+  },
+  bug: {
+    startCanvasX: 1380,
+    startCanvasY: 535,
+    floorY: 900,
+    fallFloorX: 1330,
+    runRightEndX: 1618,
+    runLeft1EndX: 1042,
+    runLeft2EndX: 826,
+    speed: 12, // px per frame
+  },
+  stickMan: {
+    scale: 1.6,
+    groundY: 900,
+    seatedPelvisX: 620,
+    standingPelvisX: 660,
+    runRightEndPelvisX: 1068,
+    skidEndPelvisX: 1130,
+    runLeftEndPelvisX: 932,
+    skidFlipFrame: 110,
   },
 } as const;
