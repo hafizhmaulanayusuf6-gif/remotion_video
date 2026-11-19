@@ -84,12 +84,21 @@ export const poses = {
     leftLeg: { hip: -4, knee: 0 },
     rightLeg: { hip: 4, knee: 0 },
   },
-  // Profile, facing right, braking hard. Legs wide in an A-shape.
+  // Profile, facing right, rising from the chair (anticipation).
+  standUpMid: {
+    torsoLean: 28,
+    headAngle: 0,
+    leftArm: { shoulder: 40, elbow: 20 },
+    rightArm: { shoulder: 45, elbow: 20 },
+    leftLeg: { hip: 55, knee: -60 },
+    rightLeg: { hip: 60, knee: -65 },
+  },
+  // Mirror-symmetric wide braking stance (torsoLean driven by override during skid).
   skid: {
     torsoLean: -10,
     headAngle: 0,
-    leftArm: { shoulder: -60, elbow: 20 },
-    rightArm: { shoulder: 70, elbow: -20 },
+    leftArm: { shoulder: -70, elbow: 25 },
+    rightArm: { shoulder: 70, elbow: -25 },
     leftLeg: { hip: -35, knee: 0 },
     rightLeg: { hip: 35, knee: 0 },
   },

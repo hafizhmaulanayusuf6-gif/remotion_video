@@ -271,3 +271,62 @@ export const SCENE3_LAYOUT = {
     skidFlipFrame: 110,
   },
 } as const;
+
+/**
+ * Scene 4 "Twist" layout and event constants.
+ */
+export const SCENE4_LAYOUT = {
+  camera: {
+    originX: 960,
+    originY: 540,
+    scale: 1.0,
+  },
+  clockText: "05:00",
+  coffeeCups: [
+    { x: 1560 },
+    { x: 1470 },
+    { x: 1380 },
+  ],
+  panel: {
+    scrollOffset: 2034,
+    targetLineIndex: 72,
+    errorStartFrame: 60,
+    errorEndFrame: 131,
+    badgeSuccessFrame: 134,
+    targetLocalX: 314,
+    targetLocalY: 171,
+    targetCanvasX: 1514, // 1200 + 314
+    targetCanvasY: 406,  // 235 + 171
+  },
+  bugToSemicolon: {
+    startX: 826,
+    floorY: 900,
+    bugBodyOffsetY: 22,
+    hoverStartFrame: 24,
+    hoverEndFrame: 40,
+    hoverDistance: 40,
+    legsShrinkStartFrame: 24,
+    legsShrinkEndFrame: 36,
+    eyesFadeStartFrame: 28,
+    eyesFadeEndFrame: 36,
+    swapFrame: 36,
+    dotsGrowStartFrame: 36,
+    dotsGrowEndFrame: 46,
+    flightStartFrame: 54,
+    flightEndFrame: 90,
+    controlPointX: 1100,
+    controlPointY: 330,
+    endScale: 0.32,
+    bobAmplitude: 5,
+    bobPeriod: 24,
+    colorSuccessFrame: 132,
+    bobSettleEndFrame: 138,
+  },
+  stickMan: {
+    scale: 1.6,
+    groundY: 900,
+    startPelvisX: 932,
+    seatedPelvisX: 620,
+    flipFrame: 110,
+  },
+} as const;

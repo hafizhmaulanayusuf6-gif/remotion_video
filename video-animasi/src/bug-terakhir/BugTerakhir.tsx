@@ -5,6 +5,7 @@ import { ScenePlaceholder } from "./ScenePlaceholder";
 import { Scene1Hook } from "./scenes/Scene1Hook";
 import { Scene2Search } from "./scenes/Scene2Search";
 import { Scene3Chase } from "./scenes/Scene3Chase";
+import { Scene4Twist } from "./scenes/Scene4Twist";
 
 export const BugTerakhir: React.FC = () => {
   return (
@@ -60,7 +61,9 @@ export const BugTerakhir: React.FC = () => {
         <ScenePlaceholder
           name={SCENES.S4_TWIST.name}
           totalDuration={SCENES.S4_TWIST.duration}
-        />
+        >
+          <Scene4Twist />
+        </ScenePlaceholder>
       </Sequence>
 
       {/* S5 Victory: frames 750 - 840 */}

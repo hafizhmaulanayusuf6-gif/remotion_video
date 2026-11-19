@@ -12,12 +12,16 @@ const VISIBLE_LINE_COUNT = 14;
 export interface CodeScreenProps {
   errorProgress: number; // 0..1
   scrollOffset?: number;
+  errorLineIndex?: number | null;
+  resolved?: boolean;
   children?: React.ReactNode;
 }
 
 export const CodeScreen: React.FC<CodeScreenProps> = ({
   errorProgress,
   scrollOffset,
+  errorLineIndex = ERROR_LINE_INDEX,
+  resolved = false,
   children,
 }) => {
   const clampedProgress = Math.min(1, Math.max(0, errorProgress));
@@ -55,7 +59,8 @@ export const CodeScreen: React.FC<CodeScreenProps> = ({
             const width = CODE_WIDTHS[patternIndex];
             const indent = CODE_INDENTS[patternIndex];
             const y = TOP_PADDING + lineIndex * LINE_SPACING - scrollOffset;
-            const isErrorLine = lineIndex === ERROR_LINE_INDEX;
+            const isErrorLine =
+              errorLineIndex !== null && lineIndex === errorLineIndex;
             const color = isErrorLine ? COLORS.error : COLORS.codeLine;
 
             return (
@@ -74,7 +79,8 @@ export const CodeScreen: React.FC<CodeScreenProps> = ({
             );
           })
         : CODE_WIDTHS.map((width, index) => {
-            const isErrorLine = index === ERROR_LINE_INDEX;
+            const isErrorLine =
+              errorLineIndex !== null && index === errorLineIndex;
             const color = isErrorLine ? errorLineColor : COLORS.codeLine;
 
             return (
@@ -95,7 +101,7 @@ export const CodeScreen: React.FC<CodeScreenProps> = ({
       {/* Optional Bug overlay (in front of code lines, behind badge) */}
       {children}
 
-      {/* Red "1 error" Badge at bottom-left */}
+      {/* Status Badge at bottom-left */}
       {clampedProgress > 0 && (
         <div
           style={{
@@ -104,8 +110,8 @@ export const CodeScreen: React.FC<CodeScreenProps> = ({
             bottom: 24,
             height: 44,
             borderRadius: 22,
-            backgroundColor: COLORS.error,
-            color: COLORS.badgeText,
+            backgroundColor: resolved ? COLORS.success : COLORS.error,
+            color: resolved ? COLORS.screen : COLORS.badgeText,
             fontFamily: FONTS.monospace,
             fontWeight: "bold",
             fontSize: 24,
@@ -120,7 +126,7 @@ export const CodeScreen: React.FC<CodeScreenProps> = ({
             zIndex: 2,
           }}
         >
-          1 error
+          {resolved ? "0 errors" : "1 error"}
         </div>
       )}
     </div>
